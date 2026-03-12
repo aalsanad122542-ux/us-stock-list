@@ -1,0 +1,50 @@
+name: Daily Stock Email
+
+on:
+  schedule:
+    # Run 5 times daily at UTC times
+    - cron: "0 4 * * *"    # 04:00 UTC
+    - cron: "0 8 * * *"    # 08:00 UTC
+    - cron: "0 12 * * *"   # 12:00 UTC
+    - cron: "0 16 * * *"   # 16:00 UTC
+    - cron: "0 20 * * *"   # 20:00 UTC
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install google-generativeai python-dotenv schedule
+
+      - name: Run daily analysis
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        run: |
+          python -c "
+            import os
+            import sys
+            sys.path.insert(0, '.')
+            from tracker.daily_custom_analysis import run_daily_analysis
+            run_daily_analysis(num_stocks=5)
+          "
+
+      - name: Report status
+        if: always()
+        run: |
+          echo "Daily stock email workflow completed"

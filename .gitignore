@@ -1,0 +1,30 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+venv/
+
+# IDE
+.ruff_cache/
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large data files - keep only the main stock list
+us_listed_stocks_backup.xlsx
+us_listed_stocks_fast.xlsx
+us_listed_stocks_fast_with_sectors.xlsx
+
+# Logs
+*.log
+
+# Submodules
+mcp-server/
