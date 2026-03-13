@@ -44,4 +44,13 @@ jobs:
           echo "RECIPIENT_EMAIL=$RECIPIENT_EMAIL" >> .env
 
       - name: Run daily analysis
-        run: python run_github_action.py
+        run: |
+          python run_github_action.py 2>&1 | tee output.log
+
+      - name: Upload output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-output
+          path: output.log
+          retention-days: 1
