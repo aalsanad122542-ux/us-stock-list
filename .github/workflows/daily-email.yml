@@ -29,33 +29,21 @@ jobs:
           pip install -r requirements.txt
           pip install google-generativeai python-dotenv schedule
 
-      - name: Debug secrets
-        run: |
-          echo "GEMINI_API_KEY secret exists: ${{ secrets.GEMINI_API_KEY != '' }}"
-          echo "SMTP_SERVER secret exists: ${{ secrets.SMTP_SERVER != '' }}"
-          echo "SMTP_PORT secret exists: ${{ secrets.SMTP_PORT != '' }}"
-          echo "SENDER_EMAIL secret exists: ${{ secrets.SENDER_EMAIL != '' }}"
-          echo "RECIPIENT_EMAIL secret exists: ${{ secrets.RECIPIENT_EMAIL != '' }}"
-
-      - name: Create .env file
+      - name: Update .env with secrets
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
           SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
         run: |
-          echo "GEMINI_API_KEY=$GEMINI_API_KEY" > .env
-          echo "SMTP_SERVER=$SMTP_SERVER" >> .env
-          echo "SMTP_PORT=$SMTP_PORT" >> .env
-          echo "SENDER_EMAIL=$SENDER_EMAIL" >> .env
-          echo "SENDER_PASSWORD=$SENDER_PASSWORD" >> .env
-          echo "RECIPIENT_EMAIL=$RECIPIENT_EMAIL" >> .env
-          echo "--- Debug: Checking values ---"
-          echo "SENDER_EMAIL: $SENDER_EMAIL"
-          echo "SENDER_PASSWORD length: ${#SENDER_PASSWORD}"
-          echo "SMTP_SERVER: $SMTP_SERVER"
+          # Update .env with secrets (only update password if secret exists)
+          if [ -n "$SENDER_PASSWORD" ]; then
+            sed -i "s/SENDER_PASSWORD=.*/SENDER_PASSWORD=$SENDER_PASSWORD/" .env
+          fi
+          if [ -n "$GEMINI_API_KEY" ]; then
+            sed -i "s/GEMINI_API_KEY=.*/GEMINI_API_KEY=$GEMINI_API_KEY/" .env
+          fi
           cat .env
 
       - name: Run daily analysis
