@@ -44,17 +44,4 @@ jobs:
           echo "RECIPIENT_EMAIL=$RECIPIENT_EMAIL" >> .env
 
       - name: Run daily analysis
-        run: |
-          python -c "
-            import sys
-            sys.path.insert(0, '.')
-            try:
-                from tracker.daily_custom_analysis import run_daily_analysis
-                run_daily_analysis(num_stocks=5)
-                print('SUCCESS')
-            except Exception as e:
-                print(f'ERROR: {e}')
-                import traceback
-                traceback.print_exc()
-                sys.exit(1)
-          "
+        run: python run_github_action.py
