@@ -52,6 +52,10 @@ jobs:
           echo "SENDER_EMAIL=$SENDER_EMAIL" >> .env
           echo "SENDER_PASSWORD=$SENDER_PASSWORD" >> .env
           echo "RECIPIENT_EMAIL=$RECIPIENT_EMAIL" >> .env
+          echo "--- Debug: Checking values ---"
+          echo "SENDER_EMAIL: $SENDER_EMAIL"
+          echo "SENDER_PASSWORD length: ${#SENDER_PASSWORD}"
+          echo "SMTP_SERVER: $SMTP_SERVER"
           cat .env
 
       - name: Run daily analysis
