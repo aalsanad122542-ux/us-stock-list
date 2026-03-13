@@ -27,7 +27,7 @@ jobs:
           pip install -r requirements.txt
           pip install google-generativeai python-dotenv schedule
 
-      - name: Run daily analysis
+      - name: Create .env file
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
@@ -36,15 +36,13 @@ jobs:
           SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
         run: |
-          python -c "
-            import os
-            import sys
-            sys.path.insert(0, '.')
-            from tracker.daily_custom_analysis import run_daily_analysis
-            run_daily_analysis(num_stocks=5)
-          "
+          echo "GEMINI_API_KEY=$GEMINI_API_KEY" > .env
+          echo "SMTP_SERVER=$SMTP_SERVER" >> .env
+          echo "SMTP_PORT=$SMTP_PORT" >> .env
+          echo "SENDER_EMAIL=$SENDER_EMAIL" >> .env
+          echo "SENDER_PASSWORD=$SENDER_PASSWORD" >> .env
+          echo "RECIPIENT_EMAIL=$RECIPIENT_EMAIL" >> .env
 
-      - name: Report status
-        if: always()
+      - name: Run daily analysis
         run: |
-          echo "Daily stock email workflow completed"
+          python -c "import sys; sys.path.insert(0, '.'); from tracker.daily_custom_analysis import run_daily_analysis; run_daily_analysis(num_stocks=5)"
