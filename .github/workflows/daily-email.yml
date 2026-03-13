@@ -29,6 +29,14 @@ jobs:
           pip install -r requirements.txt
           pip install google-generativeai python-dotenv schedule
 
+      - name: Debug secrets
+        run: |
+          echo "GEMINI_API_KEY secret exists: ${{ secrets.GEMINI_API_KEY != '' }}"
+          echo "SMTP_SERVER secret exists: ${{ secrets.SMTP_SERVER != '' }}"
+          echo "SMTP_PORT secret exists: ${{ secrets.SMTP_PORT != '' }}"
+          echo "SENDER_EMAIL secret exists: ${{ secrets.SENDER_EMAIL != '' }}"
+          echo "RECIPIENT_EMAIL secret exists: ${{ secrets.RECIPIENT_EMAIL != '' }}"
+
       - name: Create .env file
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -44,6 +52,7 @@ jobs:
           echo "SENDER_EMAIL=$SENDER_EMAIL" >> .env
           echo "SENDER_PASSWORD=$SENDER_PASSWORD" >> .env
           echo "RECIPIENT_EMAIL=$RECIPIENT_EMAIL" >> .env
+          cat .env
 
       - name: Run daily analysis
         run: |
