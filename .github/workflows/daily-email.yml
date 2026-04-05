@@ -1,14 +1,7 @@
 name: Daily Stock Email
 
 on:
-  schedule:
-    # Run 5 times daily at UTC times
-    - cron: "0 4 * * *"    # 04:00 UTC
-    - cron: "0 8 * * *"    # 08:00 UTC
-    - cron: "0 12 * * *"   # 12:00 UTC
-    - cron: "0 16 * * *"   # 16:00 UTC
-    - cron: "0 20 * * *"   # 20:00 UTC
-  workflow_dispatch:  # Manual trigger
+  workflow_dispatch:  # Manual trigger only
 
 jobs:
   send-email:
